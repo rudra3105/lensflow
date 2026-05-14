@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LensFlow">
+<meta name="description" content="Premium Photography Business Management - Calendar & Accounts">
+<title>LensFlow — Photography Studio Manager</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --gold: #d4a853;
+  --gold-light: #e8c47a;
+  --gold-dim: #a07828;
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #18181f;
+  --bg4: #1e1e28;
+  --surface: #22222e;
+  --surface2: #2a2a38;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0f0f5;
+  --text2: #9898b0;
+  --text3: #6060788;
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.12);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.12);
+  --blue: #3b82f6;
+  --blue-bg: rgba(59,130,246,0.12);
+  --purple: #a78bfa;
+  --purple-bg: rgba(167,139,250,0.12);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.12);
+  --pink: #ec4899;
+  --pink-bg: rgba(236,72,153,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-h: 72px;
+  --header-h: 64px;
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+/* ======= SCROLLBAR ======= */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:99px}
+/* ======= LOADING SCREEN ======= */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:20px;
+  transition:opacity 0.6s,visibility 0.6s;
+}
+#splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.splash-logo{
+  font-family:'Syne',sans-serif;
+  font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.splash-tag{color:var(--text2);font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase}
+.splash-loader{
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid var(--surface2);
+  border-top-color:var(--gold);
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ======= LOGIN ======= */
+#login-screen{
+  position:fixed;inset:0;z-index:9998;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px;
+  transition:opacity 0.4s,visibility 0.4s;
+}
+#login-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.login-card{
+  width:100%;max-width:400px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:36px 28px;
+}
+.login-brand{text-align:center;margin-bottom:32px}
+.login-brand h1{
+  font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.login-brand p{color:var(--text2);font-size:0.85rem;margin-top:4px}
+.login-icon{
+  width:72px;height:72px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  border-radius:20px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;font-size:2rem;color:var(--bg);
+}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:0.8rem;font-weight:500;color:var(--text2);margin-bottom:6px;letter-spacing:0.04em;text-transform:uppercase}
+.form-control{
+  width:100%;padding:14px 16px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text);font-size:1rem;
+  font-family:'DM Sans',sans-serif;
+  transition:border-color var(--transition);
+  outline:none;
+}
+.form-control:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,83,0.12)}
+.form-control::placeholder{color:var(--text2)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 20px;border-radius:var(--radius-sm);
+  font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:500;
+  cursor:pointer;border:none;transition:all var(--transition);
+  text-decoration:none;
+}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  color:var(--bg);width:100%;
+}
+.btn-gold:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-gold:active{transform:scale(0.98)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface);color:var(--text)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.btn-sm{padding:8px 14px;font-size:0.875rem}
+/* ======= APP SHELL ======= */
+#app{
+  display:flex;flex-direction:column;
+  min-height:100vh;
+  transition:opacity 0.3s;
+}
+#app.hidden{opacity:0;pointer-events:none}
+/* ======= HEADER ======= */
+.app-header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--header-h);
+  background:rgba(10,10,15,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+}
+.header-logo{
+  font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.header-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--surface);border:none;
+  color:var(--text2);font-size:1rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);
+  position:relative;
+}
+.icon-btn:hover{background:var(--surface2);color:var(--text)}
+.notif-dot{
+  position:absolute;top:8px;right:8px;
+  width:7px;height:7px;background:var(--gold);border-radius:50%;
+}
+/* ======= MAIN CONTENT ======= */
+.main-content{
+  padding-top:var(--header-h);
+  padding-bottom:calc(var(--nav-h) + var(--safe-bottom));
+  min-height:100vh;
+}
+/* ======= BOTTOM NAV ======= */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  height:calc(var(--nav-h) + var(--safe-bottom));
+  background:rgba(10,10,15,0.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;align-items:flex-start;
+  padding-top:8px;
+  padding-bottom:var(--safe-bottom);
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding:6px 4px;cursor:pointer;
+  transition:all var(--transition);
+}
+.nav-icon{
+  width:28px;height:28px;display:flex;align-items:center;
+  justify-content:center;font-size:1.15rem;
+  border-radius:8px;transition:all var(--transition);
+  color:var(--text2);
+}
+.nav-label{font-size:0.68rem;font-weight:500;color:var(--text2);transition:color var(--transition)}
+.nav-item.active .nav-icon{
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  color:var(--bg);width:36px;height:36px;border-radius:10px;
+}
+.nav-item.active .nav-label{color:var(--gold)}
+/* ======= FAB ======= */
+.fab{
+  position:fixed;
+  bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);
+  right:20px;z-index:99;
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  border:none;color:var(--bg);font-size:1.4rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(212,168,83,0.4);
+  transition:all var(--transition);
+}
+.fab:hover{transform:scale(1.06);box-shadow:0 6px 28px rgba(212,168,83,0.5)}
+.fab:active{transform:scale(0.95)}
+/* ======= PAGE SECTIONS ======= */
+.page{display:none;animation:pageIn 0.28s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* ======= SECTION HEADERS ======= */
+.section-header{
+  padding:20px 20px 12px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.section-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700}
+.section-sub{font-size:0.8rem;color:var(--text2);font-weight:400;margin-top:2px}
+.view-all{font-size:0.8rem;color:var(--gold);font-weight:500;cursor:pointer}
+/* ======= CARDS ======= */
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.card-body{padding:16px}
+/* ======= DASHBOARD PAGE ======= */
+#dashboard{padding-bottom:8px}
+.dash-greeting{
+  padding:20px 20px 0;
+}
+.dash-greeting h2{
+  font-family:'Syne',sans-serif;
+  font-size:1.6rem;font-weight:800;line-height:1.2;
+}
+.dash-greeting p{color:var(--text2);font-size:0.875rem;margin-top:4px}
+.stats-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;padding:16px 20px;
+}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;
+  top:-20px;right:-20px;
+  width:80px;height:80px;border-radius:50%;
+  background:currentColor;opacity:0.06;
+}
+.stat-card .label{font-size:0.75rem;color:var(--text2);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.stat-card .value{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:700;margin-top:6px;line-height:1}
+.stat-card .change{font-size:0.75rem;margin-top:8px;display:flex;align-items:center;gap:4px}
+.stat-card.income{color:var(--green)}
+.stat-card.expense{color:var(--red)}
+.stat-card.events{color:var(--gold)}
+.stat-card.pending{color:var(--purple)}
+/* ======= EVENT CARDS ======= */
+.events-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
+.event-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:all var(--transition);
+}
+.event-card:hover{border-color:var(--border2);background:var(--bg3)}
+.event-dot{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.event-info{flex:1;min-width:0}
+.event-info .client{font-weight:500;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event-info .meta{font-size:0.78rem;color:var(--text2);margin-top:2px}
+.event-badge{
+  font-size:0.7rem;font-weight:600;padding:3px 8px;
+  border-radius:99px;white-space:nowrap;letter-spacing:0.02em;
+}
+.badge-upcoming{background:var(--blue-bg);color:var(--blue)}
+.badge-completed{background:var(--green-bg);color:var(--green)}
+.badge-cancelled{background:var(--red-bg);color:var(--red)}
+/* ======= CALENDAR PAGE ======= */
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 0;
+}
+.cal-nav h2{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700}
+.cal-nav-btns{display:flex;gap:8px}
+.cal-nav-btns button{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);
+}
+.cal-nav-btns button:hover{background:var(--surface2);color:var(--text)}
+.cal-view-tabs{
+  display:flex;gap:0;padding:12px 20px;
+}
+.cal-tab{
+  flex:1;padding:8px;text-align:center;
+  font-size:0.8rem;font-weight:500;
+  border:1px solid var(--border);
+  background:var(--bg2);color:var(--text2);
+  cursor:pointer;transition:all var(--transition);
+}
+.cal-tab:first-child{border-radius:10px 0 0 10px}
+.cal-tab:last-child{border-radius:0 10px 10px 0}
+.cal-tab.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.calendar-grid{
+  padding:0 20px;
+}
+.cal-weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  margin-bottom:4px;
+}
+.cal-wd{
+  text-align:center;font-size:0.72rem;font-weight:600;
+  color:var(--text2);padding:6px 0;
+  letter-spacing:0.05em;
+}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day{
+  aspect-ratio:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  padding:4px 2px;border-radius:8px;cursor:pointer;
+  transition:all var(--transition);position:relative;
+}
+.cal-day:hover{background:var(--surface)}
+.cal-day.today{background:var(--gold);color:var(--bg)}
+.cal-day.today .day-num{font-weight:700}
+.cal-day.other-month .day-num{color:var(--text2);opacity:0.4}
+.cal-day.selected{background:var(--surface2);outline:1px solid var(--gold)}
+.day-num{font-size:0.82rem;font-weight:500;line-height:1.5}
+.day-dots{display:flex;gap:2px;margin-top:2px}
+.day-dot{width:4px;height:4px;border-radius:50%}
+/* ======= AGENDA VIEW ======= */
+.agenda-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
+.agenda-date-header{
+  font-size:0.75rem;font-weight:600;color:var(--text2);
+  letter-spacing:0.08em;text-transform:uppercase;
+  padding:16px 0 6px;
+  border-bottom:1px solid var(--border);
+}
+/* ======= EVENT FORM ======= */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:flex-end;justify-content:center;
+  transition:opacity var(--transition);
+}
+.modal-overlay.hidden{display:none}
+.bottom-sheet{
+  width:100%;max-width:560px;
+  background:var(--bg2);
+  border-radius:24px 24px 0 0;
+  border:1px solid var(--border);
+  max-height:92vh;overflow-y:auto;
+  animation:slideUp 0.32s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{
+  width:36px;height:4px;background:var(--surface2);
+  border-radius:2px;margin:12px auto 0;
+}
+.sheet-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.sheet-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700}
+.sheet-close{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--surface);border:none;
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);
+}
+.sheet-close:hover{background:var(--surface2);color:var(--text)}
+.sheet-body{padding:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:0.78rem;font-weight:500;color:var(--text2);margin-bottom:6px;display:block;letter-spacing:0.04em;text-transform:uppercase}
+.form-select{
+  width:100%;padding:12px 14px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--text);
+  font-size:0.95rem;font-family:'DM Sans',sans-serif;
+  outline:none;cursor:pointer;
+  transition:border-color var(--transition);
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239898b0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:36px;
+}
+.form-select:focus{border-color:var(--gold)}
+.form-select option{background:var(--bg3)}
+textarea.form-control{resize:vertical;min-height:80px}
+.amount-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* ======= ROJMED PAGE ======= */
+.rojmed-summary{
+  margin:16px 20px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+}
+.rojmed-balance{
+  padding:20px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.rojmed-balance .bal-label{font-size:0.8rem;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase}
+.rojmed-balance .bal-amount{
+  font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;
+  margin-top:6px;
+}
+.rojmed-balance .bal-amount.positive{color:var(--green)}
+.rojmed-balance .bal-amount.negative{color:var(--red)}
+.rojmed-meta{display:grid;grid-template-columns:1fr 1fr;padding:12px 20px;gap:12px}
+.rojmed-meta-item{}
+.rojmed-meta-item .m-label{font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em}
+.rojmed-meta-item .m-value{font-size:1rem;font-weight:600;margin-top:3px}
+.rojmed-meta-item.inc .m-value{color:var(--green)}
+.rojmed-meta-item.exp .m-value{color:var(--red)}
+.entries-list{padding:0 20px;display:flex;flex-direction:column;gap:8px}
+.entry-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;transition:all var(--transition);
+  position:relative;overflow:hidden;
+}
+.entry-item:hover{border-color:var(--border2)}
+.entry-icon{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.95rem;flex-shrink:0;
+}
+.entry-icon.inc{background:var(--green-bg);color:var(--green)}
+.entry-icon.exp{background:var(--red-bg);color:var(--red)}
+.entry-info{flex:1;min-width:0}
+.entry-info .e-cat{font-weight:500;font-size:0.875rem}
+.entry-info .e-meta{font-size:0.75rem;color:var(--text2);margin-top:2px}
+.entry-amount{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;white-space:nowrap}
+.entry-amount.inc{color:var(--green)}
+.entry-amount.exp{color:var(--red)}
+/* ======= QUICK ADD ROJMED BUTTONS ======= */
+.quick-add-bar{
+  display:flex;gap:10px;
+  padding:12px 20px 0;
+}
+.quick-btn{
+  flex:1;padding:12px;border-radius:var(--radius-sm);
+  font-size:0.875rem;font-weight:600;cursor:pointer;border:none;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all var(--transition);font-family:'DM Sans',sans-serif;
+}
+.quick-btn.income{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+.quick-btn.expense{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.quick-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+/* ======= FILTER BAR ======= */
+.filter-bar{
+  display:flex;gap:8px;padding:12px 20px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-chip{
+  padding:6px 14px;border-radius:99px;
+  font-size:0.8rem;font-weight:500;
+  border:1px solid var(--border);background:var(--bg2);
+  color:var(--text2);cursor:pointer;white-space:nowrap;
+  transition:all var(--transition);
+}
+.filter-chip.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+/* ======= SEARCH BAR ======= */
+.search-bar{
+  margin:12px 20px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  transition:border-color var(--transition);
+}
+.search-bar:focus-within{border-color:var(--gold)}
+.search-bar i{color:var(--text2);font-size:0.95rem}
+.search-bar input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-size:0.95rem;font-family:'DM Sans',sans-serif;
+}
+.search-bar input::placeholder{color:var(--text2)}
+/* ======= NOTIFICATIONS ======= */
+.notif-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
+.notif-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px;
+  display:flex;gap:12px;align-items:flex-start;
+  transition:all var(--transition);
+}
+.notif-item.unread{border-color:rgba(212,168,83,0.25);background:rgba(212,168,83,0.04)}
+.notif-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;
+}
+.notif-text .n-title{font-size:0.875rem;font-weight:500}
+.notif-text .n-body{font-size:0.8rem;color:var(--text2);margin-top:3px;line-height:1.5}
+.notif-text .n-time{font-size:0.72rem;color:var(--text2);margin-top:6px}
+/* ======= ANALYTICS / REPORTS ======= */
+.chart-card{
+  margin:0 20px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;
+  margin-bottom:14px;
+}
+.chart-card-title{font-size:0.85rem;font-weight:600;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em}
+.chart-wrap{position:relative;height:200px}
+/* ======= SETTINGS ======= */
+.settings-section{padding:16px 20px;display:flex;flex-direction:column;gap:8px}
+.settings-group-label{font-size:0.72rem;font-weight:600;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;padding-left:2px}
+.settings-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;cursor:pointer;
+  transition:all var(--transition);
+}
+.settings-item:hover{border-color:var(--border2);background:var(--bg3)}
+.settings-item-left{display:flex;align-items:center;gap:12px}
+.settings-item-icon{
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:0.95rem;
+}
+.settings-item-text .s-title{font-size:0.9rem;font-weight:500}
+.settings-item-text .s-sub{font-size:0.75rem;color:var(--text2);margin-top:1px}
+.settings-item-right{color:var(--text2);font-size:0.85rem}
+/* TOGGLE */
+.toggle{
+  position:relative;width:44px;height:24px;
+}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{
+  position:absolute;inset:0;background:var(--surface2);
+  border-radius:99px;cursor:pointer;transition:background var(--transition);
+}
+.toggle-slider::before{
+  content:'';position:absolute;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--text2);top:3px;left:3px;
+  transition:transform var(--transition),background var(--transition);
+}
+.toggle input:checked + .toggle-slider{background:var(--gold)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);background:var(--bg)}
+/* ======= PROFILE SECTION ======= */
+.profile-card{
+  margin:16px 20px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  display:flex;align-items:center;gap:16px;
+}
+.profile-avatar{
+  width:60px;height:60px;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;color:var(--bg);
+  flex-shrink:0;
+}
+.profile-info h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.profile-info p{color:var(--text2);font-size:0.82rem;margin-top:3px}
+/* ======= TOAST ======= */
+#toast-container{
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 72px);
+  left:50%;transform:translateX(-50%);
+  z-index:9999;display:flex;flex-direction:column;align-items:center;gap:8px;
+  pointer-events:none;width:calc(100% - 40px);max-width:360px;
+}
+.toast{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--radius-sm);padding:12px 16px;
+  font-size:0.875rem;font-weight:500;
+  display:flex;align-items:center;gap:10px;
+  animation:toastIn 0.3s ease;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  width:100%;
+}
+.toast.success{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.08)}
+.toast.error{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08)}
+.toast-out{animation:toastOut 0.3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(16px)}}
+/* ======= INSTALL BANNER ======= */
+#install-banner{
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 8px);
+  left:16px;right:16px;z-index:150;
+  background:var(--bg2);border:1px solid var(--gold);
+  border-radius:var(--radius);padding:16px;
+  display:flex;align-items:center;gap:12px;
+  animation:slideUp 0.4s ease;
+}
+#install-banner.hidden{display:none}
+.install-icon{font-size:1.4rem}
+.install-text{flex:1}
+.install-text h4{font-size:0.875rem;font-weight:600}
+.install-text p{font-size:0.75rem;color:var(--text2);margin-top:2px}
+.install-btn{
+  padding:8px 14px;border-radius:8px;
+  background:var(--gold);color:var(--bg);
+  border:none;font-size:0.8rem;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+}
+.install-close{
+  width:28px;height:28px;border-radius:6px;background:var(--surface);
+  border:none;color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:0.8rem;
+}
+/* ======= EMPTY STATE ======= */
+.empty-state{
+  text-align:center;padding:48px 20px;
+  color:var(--text2);
+}
+.empty-state i{font-size:2.5rem;margin-bottom:12px;opacity:0.5}
+.empty-state h3{font-size:1rem;font-weight:500;color:var(--text);margin-bottom:6px}
+.empty-state p{font-size:0.85rem;line-height:1.5}
+/* ======= CHIP GROUPS ======= */
+.chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{
+  padding:6px 12px;border-radius:99px;font-size:0.8rem;font-weight:500;
+  border:1px solid var(--border);background:var(--bg3);color:var(--text2);
+  cursor:pointer;transition:all var(--transition);
+}
+.chip.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+/* ======= SEPARATOR ======= */
+.sep{height:1px;background:var(--border);margin:0 20px}
+/* ======= SWIPE ACTIONS ======= */
+.swipe-item{position:relative;overflow:hidden}
+.swipe-actions{
+  position:absolute;right:0;top:0;bottom:0;
+  display:flex;align-items:stretch;
+}
+.swipe-action{
+  padding:0 18px;display:flex;align-items:center;
+  font-size:0.8rem;font-weight:600;cursor:pointer;
+}
+.swipe-action.edit{background:var(--blue-bg);color:var(--blue)}
+.swipe-action.del{background:var(--red-bg);color:var(--red)}
+/* ======= FOOTER ======= */
+.page-footer{
+  text-align:center;padding:24px 20px 12px;
+  color:var(--text2);font-size:0.72rem;line-height:1.6;
+}
+.page-footer a{color:var(--gold);text-decoration:none}
+/* ======= RESPONSIVE ======= */
+@media(min-width:768px){
+  .bottom-nav{left:0;right:auto;top:0;bottom:0;height:auto;width:80px;flex-direction:column;padding:80px 0 24px;border-right:1px solid var(--border);border-top:none;}
+  .nav-item{padding:12px 8px}
+  .main-content{padding-left:80px}
+  .app-header{left:80px}
+  .fab{right:24px;bottom:24px}
+  .stats-row{grid-template-columns:repeat(4,1fr)}
+  .modal-overlay{align-items:center}
+  .bottom-sheet{border-radius:24px;max-height:85vh;margin:24px}
+}
+@media(min-width:1024px){
+  .bottom-nav{width:220px}
+  .nav-item{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:10px 20px}
+  .nav-label{font-size:0.9rem}
+  .main-content{padding-left:220px}
+  .app-header{left:220px}
+  .nav-item.active .nav-icon{background:transparent;color:var(--gold);width:28px;height:28px;border-radius:0}
+}
+/* ======= SKELETON ======= */
+.skeleton{
+  background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+  border-radius:8px;
+}
+@keyframes shimmer{to{background-position:-200% 0}}
+.skel-row{height:60px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-logo">📷 LensFlow</div>
+  <div class="splash-tag">Photography Business Manager</div>
+  <div class="splash-loader"></div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="hidden">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">📷</div>
+      <h1>LensFlow</h1>
+      <p>Photography Business Manager</p>
+    </div>
+    <div class="form-group">
+      <label>Email / Username</label>
+      <input class="form-control" type="email" id="login-email" placeholder="studio@example.com" value="demo@lensflow.app">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input class="form-control" type="password" id="login-pass" placeholder="••••••••" value="demo123">
+    </div>
+    <button class="btn btn-gold" onclick="doLogin()" style="margin-top:8px">
+      <i class="fas fa-sign-in-alt"></i> Sign In
+    </button>
+    <p style="text-align:center;color:var(--text2);font-size:0.8rem;margin-top:16px">Demo: demo@lensflow.app / demo123</p>
+  </div>
+  <div class="page-footer" style="margin-top:20px">
+    Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+    &copy; <span id="yr-login"></span> LensFlow. All rights reserved.
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner" class="hidden">
+  <span class="install-icon">📲</span>
+  <div class="install-text">
+    <h4>Install LensFlow</h4>
+    <p>Add to home screen for the best experience</p>
+  </div>
+  <button class="install-btn" onclick="installApp()">Install</button>
+  <button class="install-close" onclick="document.getElementById('install-banner').classList.add('hidden')">✕</button>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+  <!-- HEADER -->
+  <header class="app-header">
+    <span class="header-logo">📷 LensFlow</span>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="navTo('notifications')">
+        <i class="fas fa-bell"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="icon-btn" onclick="navTo('settings')">
+        <img src="" alt="A" id="avatar-img" style="display:none">
+        <i class="fas fa-user-circle"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page active">
+      <div class="dash-greeting">
+        <h2>Good <span id="greeting-time">Morning</span>,<br>Rahul 👋</h2>
+        <p id="today-date-str">Loading...</p>
+      </div>
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card income">
+          <div class="label">Today Income</div>
+          <div class="value" id="dash-today-income">₹0</div>
+          <div class="change"><i class="fas fa-arrow-up"></i> <span>vs yesterday</span></div>
+        </div>
+        <div class="stat-card expense">
+          <div class="label">Today Expense</div>
+          <div class="value" id="dash-today-expense">₹0</div>
+          <div class="change"><i class="fas fa-arrow-down"></i> <span>vs yesterday</span></div>
+        </div>
+        <div class="stat-card events">
+          <div class="label">This Month</div>
+          <div class="value" id="dash-month-events">0</div>
+          <div class="change"><i class="fas fa-calendar"></i> <span>Events</span></div>
+        </div>
+        <div class="stat-card pending">
+          <div class="label">Pending Amt</div>
+          <div class="value" id="dash-pending">₹0</div>
+          <div class="change"><i class="fas fa-hourglass-half"></i> <span>To collect</span></div>
+        </div>
+      </div>
+      <!-- Today's Events -->
+      <div class="section-header">
+        <div>
+          <div class="section-title">Today's Events</div>
+          <div class="section-sub" id="today-event-count">Loading...</div>
+        </div>
+        <span class="view-all" onclick="navTo('calendar')">View All</span>
+      </div>
+      <div class="events-list" id="dash-events-list">
+        <div class="skeleton skel-row"></div>
+        <div class="skeleton skel-row"></div>
+      </div>
+      <!-- Upcoming -->
+      <div class="section-header" style="margin-top:8px">
+        <div>
+          <div class="section-title">Upcoming Events</div>
+        </div>
+        <span class="view-all" onclick="navTo('calendar')">Calendar</span>
+      </div>
+      <div class="events-list" id="dash-upcoming-list"></div>
+      <!-- Recent Transactions -->
+      <div class="section-header" style="margin-top:8px">
+        <div>
+          <div class="section-title">Recent Entries</div>
+        </div>
+        <span class="view-all" onclick="navTo('rojmed')">Rojmed</span>
+      </div>
+      <div class="entries-list" id="dash-entries-list"></div>
+      <div class="page-footer">
+        Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+        &copy; <span class="yr"></span> LensFlow. All rights reserved.
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section id="page-calendar" class="page">
+      <div class="section-header" style="padding-bottom:0">
+        <div><div class="section-title">Calendar</div></div>
+      </div>
+      <div class="cal-nav">
+        <h2 id="cal-month-label">May 2026</h2>
+        <div class="cal-nav-btns">
+          <button onclick="calPrev()"><i class="fas fa-chevron-left"></i></button>
+          <button onclick="calToday()"><i class="fas fa-circle-dot"></i></button>
+          <button onclick="calNext()"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="cal-view-tabs">
+        <div class="cal-tab active" data-view="month" onclick="switchCalView('month')">Month</div>
+        <div class="cal-tab" data-view="week" onclick="switchCalView('week')">Week</div>
+        <div class="cal-tab" data-view="agenda" onclick="switchCalView('agenda')">Agenda</div>
+      </div>
+      <!-- Month View -->
+      <div id="cal-month-view">
+        <div class="calendar-grid">
+          <div class="cal-weekdays">
+            <div class="cal-wd">S</div><div class="cal-wd">M</div><div class="cal-wd">T</div>
+            <div class="cal-wd">W</div><div class="cal-wd">T</div><div class="cal-wd">F</div>
+            <div class="cal-wd">S</div>
+          </div>
+          <div class="cal-days" id="cal-days"></div>
+        </div>
+      </div>
+      <!-- Week View -->
+      <div id="cal-week-view" style="display:none">
+        <div class="agenda-list" id="cal-week-list"></div>
+      </div>
+      <!-- Agenda View -->
+      <div id="cal-agenda-view" style="display:none">
+        <div class="agenda-list" id="cal-agenda-list"></div>
+      </div>
+      <!-- Selected Day Events -->
+      <div class="section-header" id="selected-day-header" style="margin-top:12px">
+        <div class="section-title" id="selected-day-title">Events on Selected Day</div>
+      </div>
+      <div class="events-list" id="selected-day-events"></div>
+      <div style="height:20px"></div>
+      <div class="page-footer">
+        Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+        &copy; <span class="yr"></span> LensFlow. All rights reserved.
+      </div>
+    </section>
+
+    <!-- ROJMED -->
+    <section id="page-rojmed" class="page">
+      <div class="section-header" style="padding-bottom:0">
+        <div>
+          <div class="section-title">Rojmed</div>
+          <div class="section-sub">Daily Ledger</div>
+        </div>
+        <div id="rojmed-date-nav" style="display:flex;gap:8px;align-items:center">
+          <button class="icon-btn" onclick="rojmedPrevDay()" style="width:32px;height:32px"><i class="fas fa-chevron-left"></i></button>
+          <span id="rojmed-date-label" style="font-size:0.82rem;color:var(--text2);white-space:nowrap"></span>
+          <button class="icon-btn" onclick="rojmedNextDay()" style="width:32px;height:32px"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <!-- Summary Card -->
+      <div class="rojmed-summary">
+        <div class="rojmed-balance">
+          <div class="bal-label">Day Balance</div>
+          <div class="bal-amount" id="rojmed-balance">₹0</div>
+        </div>
+        <div class="rojmed-meta">
+          <div class="rojmed-meta-item inc">
+            <div class="m-label">Income</div>
+            <div class="m-value" id="rojmed-income">₹0</div>
+          </div>
+          <div class="rojmed-meta-item exp">
+            <div class="m-label">Expense</div>
+            <div class="m-value" id="rojmed-expense">₹0</div>
+          </div>
+        </div>
+      </div>
+      <!-- Quick Add -->
+      <div class="quick-add-bar">
+        <button class="quick-btn income" onclick="openRojmedSheet('income')">
+          <i class="fas fa-plus-circle"></i> Add Income
+        </button>
+        <button class="quick-btn expense" onclick="openRojmedSheet('expense')">
+          <i class="fas fa-minus-circle"></i> Add Expense
+        </button>
+      </div>
+      <!-- Filter -->
+      <div class="filter-bar">
+        <div class="filter-chip active" data-filter="all" onclick="filterRojmed('all',this)">All</div>
+        <div class="filter-chip" data-filter="income" onclick="filterRojmed('income',this)">Income</div>
+        <div class="filter-chip" data-filter="expense" onclick="filterRojmed('expense',this)">Expense</div>
+      </div>
+      <!-- Search -->
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search entries..." id="rojmed-search" oninput="renderRojmedEntries()">
+      </div>
+      <!-- Entries -->
+      <div class="entries-list" id="rojmed-entries"></div>
+      <div style="height:20px"></div>
+      <div class="page-footer">
+        Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+        &copy; <span class="yr"></span> LensFlow. All rights reserved.
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section id="page-notifications" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Notifications</div><div class="section-sub">Reminders & Alerts</div></div>
+        <span class="view-all" onclick="markAllRead()" style="color:var(--text2)">Mark all read</span>
+      </div>
+      <div class="notif-list" id="notif-list"></div>
+      <div class="page-footer" style="margin-top:16px">
+        Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+        &copy; <span class="yr"></span> LensFlow. All rights reserved.
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="page-reports" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Reports</div><div class="section-sub">Analytics & Insights</div></div>
+      </div>
+      <!-- Filter chips for month -->
+      <div class="filter-bar" id="reports-months"></div>
+      <!-- Charts -->
+      <div class="chart-card">
+        <div class="chart-card-title">Income vs Expense (Monthly)</div>
+        <div class="chart-wrap"><canvas id="chart-monthly"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Expense Breakdown</div>
+        <div class="chart-wrap"><canvas id="chart-expense"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Income Sources</div>
+        <div class="chart-wrap"><canvas id="chart-income"></canvas></div>
+      </div>
+      <!-- Summary Table -->
+      <div style="padding:0 20px 16px">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+          <div style="padding:16px;border-bottom:1px solid var(--border)">
+            <div style="font-size:0.85rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em">Monthly Summary</div>
+          </div>
+          <div id="reports-summary" style="padding:16px;display:flex;flex-direction:column;gap:10px"></div>
+        </div>
+      </div>
+      <div class="page-footer">
+        Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+        &copy; <span class="yr"></span> LensFlow. All rights reserved.
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="page-settings" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Settings</div></div>
+      </div>
+      <!-- Profile -->
+      <div class="profile-card">
+        <div class="profile-avatar">RS</div>
+        <div class="profile-info">
+          <h3>Rahul Studio</h3>
+          <p>rahul@studio.com</p>
+          <p style="margin-top:4px;font-size:0.78rem;color:var(--gold)">Pro Plan</p>
+        </div>
+      </div>
+      <!-- Settings Sections -->
+      <div class="settings-section">
+        <div class="settings-group-label">Studio Info</div>
+        <div class="settings-item" onclick="showToast('Studio settings coming soon','info')">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--blue-bg);color:var(--blue)"><i class="fas fa-camera"></i></div>
+            <div class="settings-item-text"><div class="s-title">Studio Profile</div><div class="s-sub">Name, logo, contact</div></div>
+          </div>
+          <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item" onclick="showToast('Payment settings coming soon','info')">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--green-bg);color:var(--green)"><i class="fas fa-wallet"></i></div>
+            <div class="settings-item-text"><div class="s-title">Payment Info</div><div class="s-sub">UPI, bank details</div></div>
+          </div>
+          <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-group-label">Preferences</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="fas fa-bell"></i></div>
+            <div class="settings-item-text"><div class="s-title">Push Notifications</div><div class="s-sub">Event reminders</div></div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked id="notif-toggle" onchange="toggleNotif(this)"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--purple-bg);color:var(--purple)"><i class="fas fa-moon"></i></div>
+            <div class="settings-item-text"><div class="s-title">Dark Mode</div><div class="s-sub">Always on</div></div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-item" onclick="showToast('Currency settings coming soon','info')">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--gold-bg,rgba(212,168,83,0.12));color:var(--gold)"><i class="fas fa-indian-rupee-sign"></i></div>
+            <div class="settings-item-text"><div class="s-title">Currency</div><div class="s-sub">Indian Rupee (₹)</div></div>
+          </div>
+          <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-group-label">App</div>
+        <div class="settings-item" onclick="showInstallBanner()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--blue-bg);color:var(--blue)"><i class="fas fa-download"></i></div>
+            <div class="settings-item-text"><div class="s-title">Install App</div><div class="s-sub">Add to home screen</div></div>
+          </div>
+          <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item" onclick="exportData()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--green-bg);color:var(--green)"><i class="fas fa-file-export"></i></div>
+            <div class="settings-item-text"><div class="s-title">Export Data</div><div class="s-sub">Download CSV report</div></div>
+          </div>
+          <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item" onclick="doLogout()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:var(--red-bg);color:var(--red)"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="settings-item-text"><div class="s-title">Sign Out</div><div class="s-sub">rahul@studio.com</div></div>
+          </div>
+          <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+      <div class="page-footer" style="margin-top:8px">
+        LensFlow v1.0.0 — PWA<br>
+        Powered by <a href="https://www.webriseglobal.com" target="_blank">Webrise Global</a><br>
+        &copy; <span class="yr"></span> LensFlow. All rights reserved.
+      </div>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" data-page="dashboard" onclick="navTo('dashboard')">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" data-page="calendar" onclick="navTo('calendar')">
+      <div class="nav-icon"><i class="fas fa-calendar-days"></i></div>
+      <span class="nav-label">Calendar</span>
+    </div>
+    <div class="nav-item" data-page="rojmed" onclick="navTo('rojmed')">
+      <div class="nav-icon"><i class="fas fa-book-open"></i></div>
+      <span class="nav-label">Rojmed</span>
+    </div>
+    <div class="nav-item" data-page="reports" onclick="navTo('reports')">
+      <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+      <span class="nav-label">Reports</span>
+    </div>
+    <div class="nav-item" data-page="settings" onclick="navTo('settings')">
+      <div class="nav-icon"><i class="fas fa-sliders"></i></div>
+      <span class="nav-label">Settings</span>
+    </div>
+  </nav>
+
+  <!-- FAB -->
+  <button class="fab" id="main-fab" onclick="onFabClick()" title="Add New">
+    <i class="fas fa-plus"></i>
+  </button>
+</div>
+
+<!-- EVENT FORM MODAL -->
+<div class="modal-overlay hidden" id="event-modal">
+  <div class="bottom-sheet" id="event-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title" id="event-form-title">Add Event</span>
+      <button class="sheet-close" onclick="closeModal('event-modal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sheet-body">
+      <input type="hidden" id="event-id">
+      <div class="form-group">
+        <label class="form-label">Client Name *</label>
+        <input class="form-control" type="text" id="ev-client" placeholder="Enter client name">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Mobile *</label>
+          <input class="form-control" type="tel" id="ev-mobile" placeholder="+91 9999999999">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Event Type *</label>
+          <select class="form-select" id="ev-type">
+            <option value="">Select type</option>
+            <option>Wedding</option>
+            <option>Pre Wedding</option>
+            <option>Birthday</option>
+            <option>Corporate</option>
+            <option>Outdoor Shoot</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Event Date *</label>
+        <input class="form-control" type="date" id="ev-date">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Time</label>
+          <input class="form-control" type="time" id="ev-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Time</label>
+          <input class="form-control" type="time" id="ev-end">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input class="form-control" type="text" id="ev-location" placeholder="Venue / Location">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Advance (₹)</label>
+          <input class="form-control" type="number" id="ev-advance" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Remaining (₹)</label>
+          <input class="form-control" type="number" id="ev-remaining" placeholder="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="ev-status">
+          <option value="upcoming">Upcoming</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reminder</label>
+        <select class="form-select" id="ev-reminder">
+          <option value="1day">1 day before</option>
+          <option value="morning">Same day morning</option>
+          <option value="1hour">1 hour before</option>
+          <option value="none">No reminder</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-control" id="ev-notes" placeholder="Any notes about this event..."></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('event-modal')">Cancel</button>
+        <button class="btn btn-gold" style="flex:2" onclick="saveEvent()">
+          <i class="fas fa-check"></i> Save Event
+        </button>
+      </div>
+      <div id="event-delete-btn" style="margin-top:10px;display:none">
+        <button class="btn btn-danger" style="width:100%" onclick="deleteEvent()">
+          <i class="fas fa-trash"></i> Delete Event
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROJMED FORM MODAL -->
+<div class="modal-overlay hidden" id="rojmed-modal">
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title" id="rojmed-form-title">Add Income</span>
+      <button class="sheet-close" onclick="closeModal('rojmed-modal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sheet-body">
+      <input type="hidden" id="rojmed-entry-id">
+      <input type="hidden" id="rojmed-entry-type" value="income">
+      <div class="form-group">
+        <label class="form-label">Amount (₹) *</label>
+        <input class="form-control" type="number" id="rj-amount" placeholder="Enter amount" inputmode="numeric" style="font-size:1.4rem;font-family:'Syne',sans-serif;font-weight:700">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-select" id="rj-category">
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Payment Method</label>
+        <div class="chip-group" id="rj-payment-chips">
+          <div class="chip active" onclick="selectPayment(this,'Cash')">Cash</div>
+          <div class="chip" onclick="selectPayment(this,'UPI')">UPI</div>
+          <div class="chip" onclick="selectPayment(this,'Bank Transfer')">Bank Transfer</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-control" type="date" id="rj-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <input class="form-control" type="text" id="rj-notes" placeholder="Optional note...">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('rojmed-modal')">Cancel</button>
+        <button class="btn btn-gold" style="flex:2" id="rj-save-btn" onclick="saveRojmedEntry()">
+          <i class="fas fa-plus"></i> Add Income
+        </button>
+      </div>
+      <div id="rj-delete-btn" style="margin-top:10px;display:none">
+        <button class="btn btn-danger" style="width:100%" onclick="deleteRojmedEntry()">
+          <i class="fas fa-trash"></i> Delete Entry
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT DETAIL MODAL -->
+<div class="modal-overlay hidden" id="event-detail-modal">
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title">Event Details</span>
+      <button class="sheet-close" onclick="closeModal('event-detail-modal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sheet-body" id="event-detail-body"></div>
+  </div>
+</div>
+
+<script>
+// ========== DATA STORE ==========
+const store = {
+  events: [],
+  entries: [],
+  notifications: [],
+  settings: { notif: true },
+  currentUser: null
+};
+
+// ========== SEED DATA ==========
+function seedData() {
+  const today = new Date();
+  const fmt = d => d.toISOString().split('T')[0];
+
+  const d = n => {
+    const dd = new Date(today);
+    dd.setDate(dd.getDate() + n);
+    return fmt(dd);
+  };
+
+  store.events = [
+    {id:'e1', client:'Priya & Arjun', mobile:'9876543210', type:'Wedding', date:d(2), start:'09:00', end:'22:00', location:'Royal Banquet Hall, Mumbai', advance:50000, remaining:75000, status:'upcoming', reminder:'1day', notes:'Candid + Traditional photography. 2 photographers needed.', color:'#ec4899'},
+    {id:'e2', client:'Sneha Sharma', mobile:'9812345678', type:'Pre Wedding', date:d(5), start:'06:00', end:'11:00', location:'Bandra Beach, Mumbai', advance:15000, remaining:10000, status:'upcoming', reminder:'morning', notes:'Golden hour shoot. Outfit changes: 3.', color:'#a78bfa'},
+    {id:'e3', client:'TechCorp India', mobile:'9900112233', type:'Corporate', date:d(-1), start:'10:00', end:'17:00', location:'BKC Office, Mumbai', advance:30000, remaining:0, status:'completed', reminder:'none', notes:'Annual company event.', color:'#3b82f6'},
+    {id:'e4', client:'Rohan Birthday', mobile:'9988776655', type:'Birthday', date:fmt(today), start:'16:00', end:'21:00', location:'Home Party, Powai', advance:8000, remaining:5000, status:'upcoming', reminder:'1hour', notes:'Kids birthday. 2 hour shoot.', color:'#f59e0b'},
+    {id:'e5', client:'Kavya & Dev', mobile:'9765432109', type:'Wedding', date:d(12), start:'08:00', end:'23:00', location:'Taj Lands End, Mumbai', advance:100000, remaining:150000, status:'upcoming', reminder:'1day', notes:'Grand wedding. Drone + video required.', color:'#ec4899'},
+    {id:'e6', client:'Meera Nair', mobile:'9823456789', type:'Outdoor Shoot', date:d(7), start:'07:00', end:'10:00', location:'Aarey Forest', advance:5000, remaining:5000, status:'upcoming', reminder:'morning', notes:'Portfolio shoot.', color:'#22c55e'},
+  ];
+
+  const prev = n => {
+    const dd = new Date(today);
+    dd.setDate(dd.getDate() - n);
+    return fmt(dd);
+  };
+
+  store.entries = [
+    {id:'r1', type:'income', amount:50000, category:'Advance', payment:'UPI', date:fmt(today), notes:'Priya & Arjun advance'},
+    {id:'r2', type:'income', amount:30000, category:'Shoot Payment', payment:'Bank Transfer', date:fmt(today), notes:'TechCorp final payment'},
+    {id:'r3', type:'expense', amount:3500, category:'Travel', payment:'Cash', date:fmt(today), notes:'Cab + Fuel to BKC'},
+    {id:'r4', type:'expense', amount:1200, category:'Food', payment:'Cash', date:fmt(today), notes:'Team food'},
+    {id:'r5', type:'income', amount:15000, category:'Advance', payment:'UPI', date:prev(1), notes:'Sneha advance'},
+    {id:'r6', type:'expense', amount:8000, category:'Equipment', payment:'UPI', date:prev(1), notes:'Lens cleaning + accessories'},
+    {id:'r7', type:'income', amount:75000, category:'Album Payment', payment:'Bank Transfer', date:prev(2), notes:'Pooja wedding album'},
+    {id:'r8', type:'expense', amount:12000, category:'Staff Payment', payment:'Cash', date:prev(2), notes:'2nd photographer - Sanjay'},
+    {id:'r9', type:'expense', amount:4500, category:'Editing', payment:'UPI', date:prev(3), notes:'Editing software subscription'},
+    {id:'r10', type:'income', amount:8000, category:'Other', payment:'Cash', date:prev(3), notes:'Photo prints order'},
+  ];
+
+  const now = new Date();
+  store.notifications = [
+    {id:'n1', title:'Wedding Tomorrow!', body:'Priya & Arjun wedding at Royal Banquet Hall, 9:00 AM. Confirm equipment.', time:'2 hrs ago', icon:'💍', color:'var(--pink)', unread:true},
+    {id:'n2', title:'Pre Wedding in 5 Days', body:'Sneha Sharma shoot at Bandra Beach. Golden hour — arrive by 5:45 AM.', time:'Today', icon:'🌅', color:'var(--purple)', unread:true},
+    {id:'n3', title:'Birthday Shoot Today', body:'Rohan Birthday at Powai, 4:00 PM. Confirm decorations and cake timing.', time:'This morning', icon:'🎂', color:'var(--amber)', unread:true},
+    {id:'n4', title:'Payment Received', body:'₹30,000 received via Bank Transfer from TechCorp India.', time:'Yesterday', icon:'💸', color:'var(--green)', unread:false},
+    {id:'n5', title:'New Month Starts', body:'May 2026 — 3 events booked. Total advance collected: ₹1,73,000.', time:'2 days ago', icon:'📅', color:'var(--blue)', unread:false},
+  ];
+
+  save();
+}
+
+function save() {
+  try {
+    localStorage.setItem('lf_events', JSON.stringify(store.events));
+    localStorage.setItem('lf_entries', JSON.stringify(store.entries));
+    localStorage.setItem('lf_notifs', JSON.stringify(store.notifications));
+  } catch(e) {}
+}
+
+function load() {
+  try {
+    const ev = localStorage.getItem('lf_events');
+    const en = localStorage.getItem('lf_entries');
+    const no = localStorage.getItem('lf_notifs');
+    if (ev) store.events = JSON.parse(ev);
+    if (en) store.entries = JSON.parse(en);
+    if (no) store.notifications = JSON.parse(no);
+    return !!(ev && en);
+  } catch(e) { return false; }
+}
+
+// ========== INIT ==========
+const EVENT_COLORS = {
+  'Wedding':'#ec4899','Pre Wedding':'#a78bfa','Birthday':'#f59e0b',
+  'Corporate':'#3b82f6','Outdoor Shoot':'#22c55e','Other':'#9898b0'
+};
+const EVENT_EMOJI = {
+  'Wedding':'💍','Pre Wedding':'🌅','Birthday':'🎂','Corporate':'🏢','Outdoor Shoot':'🌿','Other':'📷'
+};
+
+let calCurrentDate = new Date();
+let calSelectedDate = new Date();
+let calView = 'month';
+let rojmedDate = new Date();
+let rojmedFilter = 'all';
+let editingEventId = null;
+let editingEntryId = null;
+let deferredPrompt = null;
+let chartsInit = false;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => {
+    const b = document.getElementById('install-banner');
+    if(b) b.classList.remove('hidden');
+  }, 3000);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Set year
+  document.querySelectorAll('.yr').forEach(el => el.textContent = new Date().getFullYear());
+  document.getElementById('yr-login').textContent = new Date().getFullYear();
+
+  // Splash
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    const loaded = load();
+    if (!loaded) seedData();
+    // Auto login for demo
+    const user = localStorage.getItem('lf_user');
+    if (user) {
+      store.currentUser = JSON.parse(user);
+      showApp();
+    } else {
+      document.getElementById('login-screen').classList.remove('hidden');
+    }
+  }, 1800);
+});
+
+function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) { showToast('Please fill all fields','error'); return; }
+  store.currentUser = { email, name: 'Rahul Studio' };
+  localStorage.setItem('lf_user', JSON.stringify(store.currentUser));
+  if (!load()) seedData();
+  document.getElementById('login-screen').classList.add('hidden');
+  showApp();
+}
+
+function doLogout() {
+  localStorage.removeItem('lf_user');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  showToast('Signed out successfully','success');
+}
+
+function showApp() {
+  const app = document.getElementById('app');
+  app.classList.remove('hidden');
+  setGreeting();
+  renderDashboard();
+  renderCalendar();
+  renderNotifications();
+  scheduleReminders();
+  requestNotificationPermission();
+}
+
+// ========== GREETING ==========
+function setGreeting() {
+  const h = new Date().getHours();
+  let g = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening';
+  document.getElementById('greeting-time').textContent = g;
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('today-date-str').textContent = new Date().toLocaleDateString('en-IN', opts);
+}
+
+// ========== NAVIGATION ==========
+function navTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+
+  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navItem) navItem.classList.add('active');
+
+  // Page-specific renders
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'calendar') renderCalendar();
+  if (page === 'rojmed') renderRojmed();
+  if (page === 'notifications') renderNotifications();
+  if (page === 'reports') { setTimeout(renderReports, 100); }
+
+  // FAB behavior
+  const fab = document.getElementById('main-fab');
+  if (page === 'rojmed') {
+    fab.innerHTML = '<i class="fas fa-plus"></i>';
+    fab.style.display = 'flex';
+  } else if (page === 'calendar') {
+    fab.innerHTML = '<i class="fas fa-plus"></i>';
+    fab.style.display = 'flex';
+  } else if (['reports','settings','notifications'].includes(page)) {
+    fab.style.display = 'none';
+  } else {
+    fab.style.display = 'flex';
+    fab.innerHTML = '<i class="fas fa-plus"></i>';
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function onFabClick() {
+  const active = document.querySelector('.page.active');
+  if (!active) return;
+  const id = active.id;
+  if (id === 'page-calendar' || id === 'page-dashboard') {
+    openEventModal();
+  } else if (id === 'page-rojmed') {
+    openRojmedSheet('income');
+  }
+}
+
+// ========== DASHBOARD ==========
+function renderDashboard() {
+  const today = new Date().toISOString().split('T')[0];
+  const month = today.slice(0,7);
+
+  // Financials
+  const todayInc = store.entries.filter(e => e.date === today && e.type === 'income').reduce((s,e) => s+e.amount, 0);
+  const todayExp = store.entries.filter(e => e.date === today && e.type === 'expense').reduce((s,e) => s+e.amount, 0);
+  const monthEvents = store.events.filter(e => e.date.startsWith(month)).length;
+  const pending = store.events.filter(e => e.status === 'upcoming').reduce((s,e) => s+e.remaining, 0);
+
+  document.getElementById('dash-today-income').textContent = fmt(todayInc);
+  document.getElementById('dash-today-expense').textContent = fmt(todayExp);
+  document.getElementById('dash-month-events').textContent = monthEvents;
+  document.getElementById('dash-pending').textContent = fmt(pending);
+
+  // Today's events
+  const todayEvs = store.events.filter(e => e.date === today);
+  document.getElementById('today-event-count').textContent = todayEvs.length + ' event(s) today';
+  const el = document.getElementById('dash-events-list');
+  if (todayEvs.length === 0) {
+    el.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-day"></i><h3>No events today</h3><p>Enjoy your free day or add a new event</p></div>`;
+  } else {
+    el.innerHTML = todayEvs.map(e => eventCardHTML(e)).join('');
+  }
+
+  // Upcoming
+  const upcoming = store.events.filter(e => e.date > today && e.status === 'upcoming').sort((a,b) => a.date.localeCompare(b.date)).slice(0,3);
+  const ul = document.getElementById('dash-upcoming-list');
+  ul.innerHTML = upcoming.length ? upcoming.map(e => eventCardHTML(e)).join('') : `<div class="empty-state"><i class="fas fa-calendar-check"></i><h3>No upcoming events</h3><p>Add your next booking</p></div>`;
+
+  // Recent entries
+  const recent = [...store.entries].sort((a,b) => b.date.localeCompare(a.date)).slice(0,4);
+  const rl = document.getElementById('dash-entries-list');
+  rl.innerHTML = recent.map(e => entryItemHTML(e)).join('');
+}
+
+function eventCardHTML(ev) {
+  const color = ev.color || EVENT_COLORS[ev.type] || 'var(--gold)';
+  const emoji = EVENT_EMOJI[ev.type] || '📷';
+  const badgeClass = ev.status === 'completed' ? 'badge-completed' : ev.status === 'cancelled' ? 'badge-cancelled' : 'badge-upcoming';
+  const timeStr = ev.start ? ev.start + (ev.end ? ' - '+ev.end : '') : 'All day';
+  return `<div class="event-card" onclick="openEventDetail('${ev.id}')">
+    <div class="event-dot" style="background:${color}22;color:${color}">${emoji}</div>
+    <div class="event-info">
+      <div class="client">${ev.client}</div>
+      <div class="meta">${ev.type} · ${formatDate(ev.date)} · ${timeStr}</div>
+      <div class="meta" style="margin-top:2px">${ev.location || ''}</div>
+    </div>
+    <span class="event-badge ${badgeClass}">${capitalize(ev.status)}</span>
+  </div>`;
+}
+
+function entryItemHTML(en) {
+  const isInc = en.type === 'income';
+  const icons = {
+    'Shoot Payment':'fa-camera','Advance':'fa-handshake','Album Payment':'fa-book',
+    'Travel':'fa-car','Equipment':'fa-camera-retro','Food':'fa-utensils',
+    'Staff Payment':'fa-users','Editing':'fa-desktop','Marketing':'fa-bullhorn','Other':'fa-circle-dot'
+  };
+  const icon = icons[en.category] || 'fa-circle-dot';
+  return `<div class="entry-item" onclick="openRojmedEdit('${en.id}')">
+    <div class="entry-icon ${isInc ? 'inc' : 'exp'}"><i class="fas ${icon}"></i></div>
+    <div class="entry-info">
+      <div class="e-cat">${en.category}</div>
+      <div class="e-meta">${en.payment} · ${formatDate(en.date)}${en.notes ? ' · '+en.notes : ''}</div>
+    </div>
+    <div class="entry-amount ${isInc ? 'inc' : 'exp'}">${isInc ? '+' : '-'}${fmt(en.amount)}</div>
+  </div>`;
+}
+
+// ========== CALENDAR ==========
+function renderCalendar() {
+  const y = calCurrentDate.getFullYear();
+  const m = calCurrentDate.getMonth();
+  document.getElementById('cal-month-label').textContent = calCurrentDate.toLocaleDateString('en-IN', {month:'long', year:'numeric'});
+  renderCalDays(y, m);
+  renderAgenda();
+  renderWeek();
+  renderSelectedDayEvents();
+}
+
+function renderCalDays(y, m) {
+  const grid = document.getElementById('cal-days');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const first = new Date(y, m, 1);
+  const startDay = first.getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const daysInPrevMonth = new Date(y, m, 0).getDate();
+
+  let html = '';
+  // Prev month
+  for (let i = startDay - 1; i >= 0; i--) {
+    const day = daysInPrevMonth - i;
+    html += `<div class="cal-day other-month"><span class="day-num">${day}</span></div>`;
+  }
+  // Current month
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(y, m, d);
+    const dateStr = date.toISOString().split('T')[0];
+    const isToday = date.getTime() === today.getTime();
+    const isSelected = dateStr === calSelectedDate.toISOString().split('T')[0];
+    const dayEvents = store.events.filter(e => e.date === dateStr);
+    const dots = dayEvents.slice(0,3).map(e => `<div class="day-dot" style="background:${e.color || EVENT_COLORS[e.type] || 'var(--gold)'}"></div>`).join('');
+    const classes = ['cal-day', isToday ? 'today' : '', isSelected && !isToday ? 'selected' : ''].filter(Boolean).join(' ');
+    html += `<div class="${classes}" onclick="selectCalDay('${dateStr}')"><span class="day-num">${d}</span>${dots ? `<div class="day-dots">${dots}</div>` : ''}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function selectCalDay(dateStr) {
+  calSelectedDate = new Date(dateStr + 'T12:00:00');
+  renderCalendar();
+}
+
+function renderSelectedDayEvents() {
+  const dateStr = calSelectedDate.toISOString().split('T')[0];
+  const evs = store.events.filter(e => e.date === dateStr);
+  document.getElementById('selected-day-title').textContent = 'Events on ' + formatDate(dateStr);
+  const el = document.getElementById('selected-day-events');
+  if (evs.length === 0) {
+    el.innerHTML = `<div class="empty-state" style="padding:24px 20px"><i class="fas fa-calendar-xmark"></i><h3>No events</h3><p>Tap + to add an event on this date</p></div>`;
+  } else {
+    el.innerHTML = evs.map(e => eventCardHTML(e)).join('');
+  }
+}
+
+function renderAgenda() {
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = store.events.filter(e => e.date >= today).sort((a,b) => a.date.localeCompare(b.date));
+  const list = document.getElementById('cal-agenda-list');
+  if (!upcoming.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-calendar"></i><h3>No upcoming events</h3></div>`; return; }
+  let html = '', lastDate = '';
+  upcoming.forEach(ev => {
+    if (ev.date !== lastDate) {
+      html += `<div class="agenda-date-header">${formatDate(ev.date)}</div>`;
+      lastDate = ev.date;
+    }
+    html += eventCardHTML(ev);
+  });
+  list.innerHTML = html;
+}
+
+function renderWeek() {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+  const list = document.getElementById('cal-week-list');
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    const dateStr = d.toISOString().split('T')[0];
+    const evs = store.events.filter(e => e.date === dateStr);
+    const isToday = dateStr === today.toISOString().split('T')[0];
+    html += `<div class="agenda-date-header" style="${isToday ? 'color:var(--gold)' : ''}">${d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'})}${isToday ? ' — Today' : ''}</div>`;
+    if (evs.length) html += evs.map(e => eventCardHTML(e)).join('');
+    else html += `<div style="color:var(--text2);font-size:0.82rem;padding:8px 0 4px">No events</div>`;
+  }
+  list.innerHTML = html;
+}
+
+function switchCalView(view) {
+  calView = view;
+  document.querySelectorAll('.cal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.cal-tab[data-view="${view}"]`).classList.add('active');
+  document.getElementById('cal-month-view').style.display = view === 'month' ? '' : 'none';
+  document.getElementById('cal-week-view').style.display = view === 'week' ? '' : 'none';
+  document.getElementById('cal-agenda-view').style.display = view === 'agenda' ? '' : 'none';
+  document.getElementById('selected-day-header').style.display = view === 'month' ? '' : 'none';
+  document.getElementById('selected-day-events').style.display = view === 'month' ? '' : 'none';
+}
+
+function calPrev() { calCurrentDate.setMonth(calCurrentDate.getMonth()-1); renderCalendar(); }
+function calNext() { calCurrentDate.setMonth(calCurrentDate.getMonth()+1); renderCalendar(); }
+function calToday() { calCurrentDate = new Date(); calSelectedDate = new Date(); renderCalendar(); }
+
+// ========== EVENT MODAL ==========
+function openEventModal(prefillDate) {
+  editingEventId = null;
+  document.getElementById('event-form-title').textContent = 'Add Event';
+  document.getElementById('event-id').value = '';
+  document.getElementById('ev-client').value = '';
+  document.getElementById('ev-mobile').value = '';
+  document.getElementById('ev-type').value = '';
+  const d = prefillDate || calSelectedDate.toISOString().split('T')[0];
+  document.getElementById('ev-date').value = d;
+  document.getElementById('ev-start').value = '09:00';
+  document.getElementById('ev-end').value = '17:00';
+  document.getElementById('ev-location').value = '';
+  document.getElementById('ev-advance').value = '';
+  document.getElementById('ev-remaining').value = '';
+  document.getElementById('ev-status').value = 'upcoming';
+  document.getElementById('ev-reminder').value = '1day';
+  document.getElementById('ev-notes').value = '';
+  document.getElementById('event-delete-btn').style.display = 'none';
+  openModal('event-modal');
+}
+
+function openEventEdit(id) {
+  const ev = store.events.find(e => e.id === id);
+  if (!ev) return;
+  editingEventId = id;
+  document.getElementById('event-form-title').textContent = 'Edit Event';
+  document.getElementById('event-id').value = id;
+  document.getElementById('ev-client').value = ev.client;
+  document.getElementById('ev-mobile').value = ev.mobile;
+  document.getElementById('ev-type').value = ev.type;
+  document.getElementById('ev-date').value = ev.date;
+  document.getElementById('ev-start').value = ev.start || '';
+  document.getElementById('ev-end').value = ev.end || '';
+  document.getElementById('ev-location').value = ev.location || '';
+  document.getElementById('ev-advance').value = ev.advance || '';
+  document.getElementById('ev-remaining').value = ev.remaining || '';
+  document.getElementById('ev-status').value = ev.status;
+  document.getElementById('ev-reminder').value = ev.reminder || '1day';
+  document.getElementById('ev-notes').value = ev.notes || '';
+  document.getElementById('event-delete-btn').style.display = 'block';
+  closeModal('event-detail-modal');
+  openModal('event-modal');
+}
+
+function saveEvent() {
+  const client = document.getElementById('ev-client').value.trim();
+  const mobile = document.getElementById('ev-mobile').value.trim();
+  const type = document.getElementById('ev-type').value;
+  const date = document.getElementById('ev-date').value;
+  if (!client || !mobile || !type || !date) { showToast('Please fill all required fields','error'); return; }
+
+  const ev = {
+    id: editingEventId || 'e' + Date.now(),
+    client, mobile, type, date,
+    start: document.getElementById('ev-start').value,
+    end: document.getElementById('ev-end').value,
+    location: document.getElementById('ev-location').value,
+    advance: parseFloat(document.getElementById('ev-advance').value) || 0,
+    remaining: parseFloat(document.getElementById('ev-remaining').value) || 0,
+    status: document.getElementById('ev-status').value,
+    reminder: document.getElementById('ev-reminder').value,
+    notes: document.getElementById('ev-notes').value,
+    color: EVENT_COLORS[type] || 'var(--gold)'
+  };
+
+  if (editingEventId) {
+    const idx = store.events.findIndex(e => e.id === editingEventId);
+    if (idx !== -1) store.events[idx] = ev;
+    showToast('Event updated!','success');
+  } else {
+    store.events.push(ev);
+    showToast('Event added!','success');
+  }
+  save();
+  closeModal('event-modal');
+  renderDashboard();
+  renderCalendar();
+}
+
+function deleteEvent() {
+  if (!editingEventId) return;
+  store.events = store.events.filter(e => e.id !== editingEventId);
+  save();
+  closeModal('event-modal');
+  renderDashboard();
+  renderCalendar();
+  showToast('Event deleted','success');
+}
+
+function openEventDetail(id) {
+  const ev = store.events.find(e => e.id === id);
+  if (!ev) return;
+  const color = ev.color || EVENT_COLORS[ev.type] || 'var(--gold)';
+  const emoji = EVENT_EMOJI[ev.type] || '📷';
+  const total = ev.advance + ev.remaining;
+  const html = `
+    <div style="text-align:center;padding:8px 0 20px">
+      <div style="width:56px;height:56px;border-radius:16px;background:${color}22;color:${color};font-size:1.8rem;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">${emoji}</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700">${ev.client}</h2>
+      <span class="event-badge ${ev.status === 'completed' ? 'badge-completed' : ev.status === 'cancelled' ? 'badge-cancelled' : 'badge-upcoming'}" style="margin-top:8px;display:inline-block">${capitalize(ev.status)}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${detailRow('fas fa-tag', 'Event Type', ev.type)}
+      ${detailRow('fas fa-calendar', 'Date', formatDate(ev.date))}
+      ${detailRow('fas fa-clock', 'Time', (ev.start||'') + (ev.end ? ' – '+ev.end : ''))}
+      ${detailRow('fas fa-location-dot', 'Location', ev.location || '—')}
+      ${detailRow('fas fa-phone', 'Mobile', ev.mobile)}
+      ${detailRow('fas fa-indian-rupee-sign', 'Advance Paid', fmt(ev.advance))}
+      ${detailRow('fas fa-hourglass-half', 'Remaining', fmt(ev.remaining), ev.remaining > 0 ? 'var(--red)' : 'var(--green)')}
+      ${detailRow('fas fa-receipt', 'Total Package', fmt(total))}
+      ${ev.notes ? detailRow('fas fa-note-sticky', 'Notes', ev.notes) : ''}
+      ${detailRow('fas fa-bell', 'Reminder', ev.reminder === '1day' ? '1 day before' : ev.reminder === 'morning' ? 'Same day morning' : ev.reminder === '1hour' ? '1 hour before' : 'No reminder')}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('event-detail-modal')">Close</button>
+      <button class="btn btn-gold" style="flex:2" onclick="openEventEdit('${ev.id}')"><i class="fas fa-edit"></i> Edit</button>
+    </div>
+  `;
+  document.getElementById('event-detail-body').innerHTML = html;
+  openModal('event-detail-modal');
+}
+
+function detailRow(icon, label, value, valColor) {
+  return `<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+    <div style="width:32px;height:32px;border-radius:8px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem;color:var(--text2)"><i class="${icon}"></i></div>
+    <div style="flex:1">
+      <div style="font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em">${label}</div>
+      <div style="font-size:0.9rem;font-weight:500;margin-top:2px;${valColor ? 'color:'+valColor : ''}">${value || '—'}</div>
+    </div>
+  </div>`;
+}
+
+// ========== ROJMED ==========
+const INCOME_CATS = ['Shoot Payment','Advance','Album Payment','Other'];
+const EXPENSE_CATS = ['Travel','Equipment','Food','Staff Payment','Editing','Marketing','Other'];
+
+let rjPaymentMethod = 'Cash';
+
+function renderRojmed() {
+  const dateStr = rojmedDate.toISOString().split('T')[0];
+  document.getElementById('rojmed-date-label').textContent = formatDate(dateStr);
+  renderRojmedEntries();
+}
+
+function renderRojmedEntries() {
+  const dateStr = rojmedDate.toISOString().split('T')[0];
+  const search = (document.getElementById('rojmed-search') || {value:''}).value.toLowerCase();
+
+  let entries = store.entries.filter(e => e.date === dateStr);
+  if (rojmedFilter !== 'all') entries = entries.filter(e => e.type === rojmedFilter);
+  if (search) entries = entries.filter(e => e.category.toLowerCase().includes(search) || (e.notes||'').toLowerCase().includes(search));
+
+  const dayInc = store.entries.filter(e => e.date === dateStr && e.type === 'income').reduce((s,e) => s+e.amount, 0);
+  const dayExp = store.entries.filter(e => e.date === dateStr && e.type === 'expense').reduce((s,e) => s+e.amount, 0);
+  const bal = dayInc - dayExp;
+
+  const balEl = document.getElementById('rojmed-balance');
+  balEl.textContent = fmt(Math.abs(bal));
+  balEl.className = 'bal-amount ' + (bal >= 0 ? 'positive' : 'negative');
+  if (bal < 0) balEl.textContent = '-' + fmt(Math.abs(bal));
+  document.getElementById('rojmed-income').textContent = fmt(dayInc);
+  document.getElementById('rojmed-expense').textContent = fmt(dayExp);
+
+  const el = document.getElementById('rojmed-entries');
+  if (!entries.length) {
+    el.innerHTML = `<div class="empty-state"><i class="fas fa-book-open"></i><h3>No entries</h3><p>Tap Add Income or Add Expense to get started</p></div>`;
+    return;
+  }
+  el.innerHTML = entries.map(e => entryItemHTML(e)).join('');
+}
+
+function filterRojmed(f, el) {
+  rojmedFilter = f;
+  document.querySelectorAll('#page-rojmed .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderRojmedEntries();
+}
+
+function rojmedPrevDay() {
+  rojmedDate.setDate(rojmedDate.getDate() - 1);
+  renderRojmed();
+}
+function rojmedNextDay() {
+  if (rojmedDate.toISOString().split('T')[0] >= new Date().toISOString().split('T')[0]) return;
+  rojmedDate.setDate(rojmedDate.getDate() + 1);
+  renderRojmed();
+}
+
+function openRojmedSheet(type) {
+  editingEntryId = null;
+  rjPaymentMethod = 'Cash';
+  document.getElementById('rojmed-entry-id').value = '';
+  document.getElementById('rojmed-entry-type').value = type;
+  document.getElementById('rojmed-form-title').textContent = type === 'income' ? 'Add Income' : 'Add Expense';
+  document.getElementById('rj-save-btn').innerHTML = `<i class="fas fa-plus"></i> ${type === 'income' ? 'Add Income' : 'Add Expense'}`;
+  document.getElementById('rj-amount').value = '';
+  document.getElementById('rj-notes').value = '';
+  document.getElementById('rj-date').value = rojmedDate.toISOString().split('T')[0];
+  document.getElementById('rj-delete-btn').style.display = 'none';
+
+  const cats = type === 'income' ? INCOME_CATS : EXPENSE_CATS;
+  document.getElementById('rj-category').innerHTML = cats.map(c => `<option>${c}</option>`).join('');
+
+  const chips = document.querySelectorAll('#rj-payment-chips .chip');
+  chips.forEach(c => c.classList.remove('active'));
+  if (chips[0]) chips[0].classList.add('active');
+
+  openModal('rojmed-modal');
+  setTimeout(() => document.getElementById('rj-amount').focus(), 300);
+}
+
+function openRojmedEdit(id) {
+  const en = store.entries.find(e => e.id === id);
+  if (!en) return;
+  editingEntryId = id;
+  rjPaymentMethod = en.payment;
+  document.getElementById('rojmed-entry-id').value = id;
+  document.getElementById('rojmed-entry-type').value = en.type;
+  document.getElementById('rojmed-form-title').textContent = 'Edit ' + capitalize(en.type);
+  document.getElementById('rj-save-btn').innerHTML = `<i class="fas fa-check"></i> Update`;
+  document.getElementById('rj-amount').value = en.amount;
+  document.getElementById('rj-notes').value = en.notes || '';
+  document.getElementById('rj-date').value = en.date;
+  document.getElementById('rj-delete-btn').style.display = 'block';
+
+  const cats = en.type === 'income' ? INCOME_CATS : EXPENSE_CATS;
+  document.getElementById('rj-category').innerHTML = cats.map(c => `<option ${c===en.category?'selected':''}>${c}</option>`).join('');
+
+  const chips = document.querySelectorAll('#rj-payment-chips .chip');
+  chips.forEach(c => { c.classList.toggle('active', c.textContent === en.payment); });
+
+  openModal('rojmed-modal');
+}
+
+function selectPayment(el, method) {
+  rjPaymentMethod = method;
+  document.querySelectorAll('#rj-payment-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function saveRojmedEntry() {
+  const amount = parseFloat(document.getElementById('rj-amount').value);
+  const category = document.getElementById('rj-category').value;
+  const date = document.getElementById('rj-date').value;
+  if (!amount || amount <= 0) { showToast('Enter a valid amount','error'); return; }
+  if (!category) { showToast('Select a category','error'); return; }
+
+  const en = {
+    id: editingEntryId || 'r' + Date.now(),
+    type: document.getElementById('rojmed-entry-type').value,
+    amount, category,
+    payment: rjPaymentMethod || 'Cash',
+    date,
+    notes: document.getElementById('rj-notes').value.trim()
+  };
+
+  if (editingEntryId) {
+    const idx = store.entries.findIndex(e => e.id === editingEntryId);
+    if (idx !== -1) store.entries[idx] = en;
+    showToast('Entry updated!','success');
+  } else {
+    store.entries.push(en);
+    showToast('Entry added!','success');
+  }
+  save();
+  closeModal('rojmed-modal');
+  renderRojmed();
+  if (document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
+}
+
+function deleteRojmedEntry() {
+  if (!editingEntryId) return;
+  store.entries = store.entries.filter(e => e.id !== editingEntryId);
+  save();
+  closeModal('rojmed-modal');
+  renderRojmed();
+  showToast('Entry deleted','success');
+}
+
+// ========== NOTIFICATIONS ==========
+function renderNotifications() {
+  const el = document.getElementById('notif-list');
+  if (!store.notifications.length) {
+    el.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><h3>No notifications</h3><p>Event reminders will appear here</p></div>`;
+    return;
+  }
+  el.innerHTML = store.notifications.map(n => `
+    <div class="notif-item ${n.unread ? 'unread' : ''}">
+      <div class="notif-icon" style="background:${n.color}22;color:${n.color}">${n.icon}</div>
+      <div class="notif-text">
+        <div class="n-title">${n.title}</div>
+        <div class="n-body">${n.body}</div>
+        <div class="n-time">${n.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function markAllRead() {
+  store.notifications.forEach(n => n.unread = false);
+  save();
+  renderNotifications();
+  document.querySelector('.notif-dot').style.display = 'none';
+  showToast('All marked as read','success');
+}
+
+// ========== REPORTS ==========
+let monthlyChart, expenseChart, incomeChart;
+
+function renderReports() {
+  if (chartsInit) { updateCharts(); return; }
+  chartsInit = true;
+
+  const months = getLast6Months();
+  const monthEl = document.getElementById('reports-months');
+  monthEl.innerHTML = months.map((m,i) => `<div class="filter-chip ${i===months.length-1?'active':''}" onclick="selectReportMonth('${m}',this)">${m.slice(0,7)}</div>`).join('');
+
+  Chart.defaults.color = '#9898b0';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.07)';
+
+  const monthData = months.map(m => ({
+    label: m.slice(0,7),
+    income: store.entries.filter(e => e.date.startsWith(m.slice(0,7)) && e.type === 'income').reduce((s,e) => s+e.amount, 0),
+    expense: store.entries.filter(e => e.date.startsWith(m.slice(0,7)) && e.type === 'expense').reduce((s,e) => s+e.amount, 0)
+  }));
+
+  monthlyChart = new Chart(document.getElementById('chart-monthly'), {
+    type: 'bar',
+    data: {
+      labels: monthData.map(m => m.label),
+      datasets: [
+        { label: 'Income', data: monthData.map(m => m.income), backgroundColor: 'rgba(34,197,94,0.7)', borderRadius: 6 },
+        { label: 'Expense', data: monthData.map(m => m.expense), backgroundColor: 'rgba(239,68,68,0.7)', borderRadius: 6 }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { boxWidth: 12, font: { size: 11 } } } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => '₹' + (v/1000).toFixed(0) + 'K' } } } }
+  });
+
+  renderExpenseChart('all');
+  renderIncomeChart('all');
+  renderSummaryTable(months[months.length-1].slice(0,7));
+}
+
+function renderExpenseChart(month) {
+  const cats = EXPENSE_CATS.slice(0,-1);
+  const data = cats.map(c => store.entries.filter(e => e.type === 'expense' && e.category === c && (month === 'all' || e.date.startsWith(month))).reduce((s,e) => s+e.amount, 0));
+  const colors = ['#3b82f6','#a78bfa','#f59e0b','#ec4899','#22c55e','#ef4444'];
+
+  if (expenseChart) expenseChart.destroy();
+  expenseChart = new Chart(document.getElementById('chart-expense'), {
+    type: 'doughnut',
+    data: { labels: cats, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 11 }, padding: 8 } } } }
+  });
+}
+
+function renderIncomeChart(month) {
+  const cats = INCOME_CATS;
+  const data = cats.map(c => store.entries.filter(e => e.type === 'income' && e.category === c && (month === 'all' || e.date.startsWith(month))).reduce((s,e) => s+e.amount, 0));
+  const colors = ['#22c55e','#d4a853','#3b82f6','#9898b0'];
+
+  if (incomeChart) incomeChart.destroy();
+  incomeChart = new Chart(document.getElementById('chart-income'), {
+    type: 'doughnut',
+    data: { labels: cats, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 11 }, padding: 8 } } } }
+  });
+}
+
+function renderSummaryTable(month) {
+  const inc = store.entries.filter(e => e.date.startsWith(month) && e.type === 'income').reduce((s,e) => s+e.amount, 0);
+  const exp = store.entries.filter(e => e.date.startsWith(month) && e.type === 'expense').reduce((s,e) => s+e.amount, 0);
+  const profit = inc - exp;
+  const evs = store.events.filter(e => e.date.startsWith(month));
+  const el = document.getElementById('reports-summary');
+  el.innerHTML = [
+    { label: 'Total Income', value: fmt(inc), color: 'var(--green)' },
+    { label: 'Total Expense', value: fmt(exp), color: 'var(--red)' },
+    { label: 'Net Profit', value: (profit >= 0 ? '+' : '-') + fmt(Math.abs(profit)), color: profit >= 0 ? 'var(--green)' : 'var(--red)' },
+    { label: 'Events This Month', value: evs.length + ' events', color: 'var(--gold)' },
+  ].map(r => `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+    <span style="font-size:0.85rem;color:var(--text2)">${r.label}</span>
+    <span style="font-size:0.95rem;font-weight:600;color:${r.color}">${r.value}</span>
+  </div>`).join('');
+}
+
+function updateCharts() {}
+function selectReportMonth(m, el) {
+  document.querySelectorAll('#reports-months .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderSummaryTable(m.slice(0,7));
+}
+
+function getLast6Months() {
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    months.push(d.toISOString().slice(0,7) + '-01');
+  }
+  return months;
+}
+
+// ========== MODALS ==========
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+// ========== NOTIFICATIONS ==========
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    setTimeout(() => Notification.requestPermission(), 5000);
+  }
+}
+
+function scheduleReminders() {
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+  store.events.filter(e => e.date === tomorrowStr && e.status === 'upcoming' && e.reminder === '1day').forEach(ev => {
+    showBrowserNotif(`Event Tomorrow: ${ev.client}`, `${ev.type} at ${ev.location || 'TBD'}`);
+  });
+}
+
+function showBrowserNotif(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body, icon: '/icon.png' });
+  }
+}
+
+function toggleNotif(el) {
+  store.settings.notif = el.checked;
+  if (el.checked) requestNotificationPermission();
+  showToast(el.checked ? 'Notifications enabled' : 'Notifications disabled', 'success');
+}
+
+// ========== INSTALL ==========
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('install-banner').classList.add('hidden');
+    });
+  } else {
+    showToast('Open browser menu → Add to Home Screen','info');
+  }
+}
+function showInstallBanner() {
+  document.getElementById('install-banner').classList.remove('hidden');
+}
+
+// ========== EXPORT ==========
+function exportData() {
+  const rows = [['Date','Type','Category','Amount','Payment','Notes']];
+  store.entries.forEach(e => rows.push([e.date, e.type, e.category, e.amount, e.payment, e.notes || '']));
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'lensflow-rojmed.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported!','success');
+}
+
+// ========== TOAST ==========
+function showToast(msg, type='info') {
+  const tc = document.getElementById('toast-container');
+  const icons = { success:'✅', error:'❌', info:'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  tc.appendChild(t);
+  setTimeout(() => { t.classList.add('toast-out'); setTimeout(() => t.remove(), 300); }, 2500);
+}
+
+// ========== UTILS ==========
+function fmt(n) { return '₹' + (n||0).toLocaleString('en-IN'); }
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ========== SERVICE WORKER ==========
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
