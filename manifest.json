@@ -60,38 +60,8 @@
       "purpose": "maskable any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "screenshots/mobile-dashboard.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Dashboard — Today's overview"
-    },
-    {
-      "src": "screenshots/mobile-calendar.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Calendar — Smart Booking"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Add Event",
-      "short_name": "New Event",
-      "description": "Quickly add a new photography event",
-      "url": "/?shortcut=add-event",
-      "icons": [{ "src": "icons/shortcut-event.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Add Entry",
-      "short_name": "Rojmed",
-      "description": "Add income or expense to daily ledger",
-      "url": "/?shortcut=add-entry",
-      "icons": [{ "src": "icons/shortcut-rojmed.png", "sizes": "96x96" }]
-    }
-  ],
+  
+ 
   "related_applications": [],
   "prefer_related_applications": false
 }
