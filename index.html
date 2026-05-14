@@ -1283,44 +1283,39 @@ const store = {
 
 // ========== SEED DATA ==========
 function seedData() {
-  const today = new Date();
-  const fmt = d => d.toISOString().split('T')[0];
+  const now = new Date();
+  // dateStr: converts a Date object to YYYY-MM-DD string
+  const dateStr = d => d.toISOString().split('T')[0];
+  const todayStr = dateStr(now);
 
-  const d = n => {
-    const dd = new Date(today);
+  const daysFromNow = n => {
+    const dd = new Date(now);
     dd.setDate(dd.getDate() + n);
-    return fmt(dd);
+    return dateStr(dd);
   };
 
   store.events = [
-    {id:'e1', client:'Priya & Arjun', mobile:'9876543210', type:'Wedding', date:d(2), start:'09:00', end:'22:00', location:'Royal Banquet Hall, Mumbai', advance:50000, remaining:75000, status:'upcoming', reminder:'1day', notes:'Candid + Traditional photography. 2 photographers needed.', color:'#ec4899'},
-    {id:'e2', client:'Sneha Sharma', mobile:'9812345678', type:'Pre Wedding', date:d(5), start:'06:00', end:'11:00', location:'Bandra Beach, Mumbai', advance:15000, remaining:10000, status:'upcoming', reminder:'morning', notes:'Golden hour shoot. Outfit changes: 3.', color:'#a78bfa'},
-    {id:'e3', client:'TechCorp India', mobile:'9900112233', type:'Corporate', date:d(-1), start:'10:00', end:'17:00', location:'BKC Office, Mumbai', advance:30000, remaining:0, status:'completed', reminder:'none', notes:'Annual company event.', color:'#3b82f6'},
-    {id:'e4', client:'Rohan Birthday', mobile:'9988776655', type:'Birthday', date:fmt(today), start:'16:00', end:'21:00', location:'Home Party, Powai', advance:8000, remaining:5000, status:'upcoming', reminder:'1hour', notes:'Kids birthday. 2 hour shoot.', color:'#f59e0b'},
-    {id:'e5', client:'Kavya & Dev', mobile:'9765432109', type:'Wedding', date:d(12), start:'08:00', end:'23:00', location:'Taj Lands End, Mumbai', advance:100000, remaining:150000, status:'upcoming', reminder:'1day', notes:'Grand wedding. Drone + video required.', color:'#ec4899'},
-    {id:'e6', client:'Meera Nair', mobile:'9823456789', type:'Outdoor Shoot', date:d(7), start:'07:00', end:'10:00', location:'Aarey Forest', advance:5000, remaining:5000, status:'upcoming', reminder:'morning', notes:'Portfolio shoot.', color:'#22c55e'},
+    {id:'e1', client:'Priya & Arjun', mobile:'9876543210', type:'Wedding', date:daysFromNow(2), start:'09:00', end:'22:00', location:'Royal Banquet Hall, Mumbai', advance:50000, remaining:75000, status:'upcoming', reminder:'1day', notes:'Candid + Traditional photography. 2 photographers needed.', color:'#ec4899'},
+    {id:'e2', client:'Sneha Sharma', mobile:'9812345678', type:'Pre Wedding', date:daysFromNow(5), start:'06:00', end:'11:00', location:'Bandra Beach, Mumbai', advance:15000, remaining:10000, status:'upcoming', reminder:'morning', notes:'Golden hour shoot. Outfit changes: 3.', color:'#a78bfa'},
+    {id:'e3', client:'TechCorp India', mobile:'9900112233', type:'Corporate', date:daysFromNow(-1), start:'10:00', end:'17:00', location:'BKC Office, Mumbai', advance:30000, remaining:0, status:'completed', reminder:'none', notes:'Annual company event.', color:'#3b82f6'},
+    {id:'e4', client:'Rohan Birthday', mobile:'9988776655', type:'Birthday', date:todayStr, start:'16:00', end:'21:00', location:'Home Party, Powai', advance:8000, remaining:5000, status:'upcoming', reminder:'1hour', notes:'Kids birthday. 2 hour shoot.', color:'#f59e0b'},
+    {id:'e5', client:'Kavya & Dev', mobile:'9765432109', type:'Wedding', date:daysFromNow(12), start:'08:00', end:'23:00', location:'Taj Lands End, Mumbai', advance:100000, remaining:150000, status:'upcoming', reminder:'1day', notes:'Grand wedding. Drone + video required.', color:'#ec4899'},
+    {id:'e6', client:'Meera Nair', mobile:'9823456789', type:'Outdoor Shoot', date:daysFromNow(7), start:'07:00', end:'10:00', location:'Aarey Forest', advance:5000, remaining:5000, status:'upcoming', reminder:'morning', notes:'Portfolio shoot.', color:'#22c55e'},
   ];
-
-  const prev = n => {
-    const dd = new Date(today);
-    dd.setDate(dd.getDate() - n);
-    return fmt(dd);
-  };
 
   store.entries = [
-    {id:'r1', type:'income', amount:50000, category:'Advance', payment:'UPI', date:fmt(today), notes:'Priya & Arjun advance'},
-    {id:'r2', type:'income', amount:30000, category:'Shoot Payment', payment:'Bank Transfer', date:fmt(today), notes:'TechCorp final payment'},
-    {id:'r3', type:'expense', amount:3500, category:'Travel', payment:'Cash', date:fmt(today), notes:'Cab + Fuel to BKC'},
-    {id:'r4', type:'expense', amount:1200, category:'Food', payment:'Cash', date:fmt(today), notes:'Team food'},
-    {id:'r5', type:'income', amount:15000, category:'Advance', payment:'UPI', date:prev(1), notes:'Sneha advance'},
-    {id:'r6', type:'expense', amount:8000, category:'Equipment', payment:'UPI', date:prev(1), notes:'Lens cleaning + accessories'},
-    {id:'r7', type:'income', amount:75000, category:'Album Payment', payment:'Bank Transfer', date:prev(2), notes:'Pooja wedding album'},
-    {id:'r8', type:'expense', amount:12000, category:'Staff Payment', payment:'Cash', date:prev(2), notes:'2nd photographer - Sanjay'},
-    {id:'r9', type:'expense', amount:4500, category:'Editing', payment:'UPI', date:prev(3), notes:'Editing software subscription'},
-    {id:'r10', type:'income', amount:8000, category:'Other', payment:'Cash', date:prev(3), notes:'Photo prints order'},
+    {id:'r1', type:'income', amount:50000, category:'Advance', payment:'UPI', date:todayStr, notes:'Priya & Arjun advance'},
+    {id:'r2', type:'income', amount:30000, category:'Shoot Payment', payment:'Bank Transfer', date:todayStr, notes:'TechCorp final payment'},
+    {id:'r3', type:'expense', amount:3500, category:'Travel', payment:'Cash', date:todayStr, notes:'Cab + Fuel to BKC'},
+    {id:'r4', type:'expense', amount:1200, category:'Food', payment:'Cash', date:todayStr, notes:'Team food'},
+    {id:'r5', type:'income', amount:15000, category:'Advance', payment:'UPI', date:daysFromNow(-1), notes:'Sneha advance'},
+    {id:'r6', type:'expense', amount:8000, category:'Equipment', payment:'UPI', date:daysFromNow(-1), notes:'Lens cleaning + accessories'},
+    {id:'r7', type:'income', amount:75000, category:'Album Payment', payment:'Bank Transfer', date:daysFromNow(-2), notes:'Pooja wedding album'},
+    {id:'r8', type:'expense', amount:12000, category:'Staff Payment', payment:'Cash', date:daysFromNow(-2), notes:'2nd photographer - Sanjay'},
+    {id:'r9', type:'expense', amount:4500, category:'Editing', payment:'UPI', date:daysFromNow(-3), notes:'Editing software subscription'},
+    {id:'r10', type:'income', amount:8000, category:'Other', payment:'Cash', date:daysFromNow(-3), notes:'Photo prints order'},
   ];
 
-  const now = new Date();
   store.notifications = [
     {id:'n1', title:'Wedding Tomorrow!', body:'Priya & Arjun wedding at Royal Banquet Hall, 9:00 AM. Confirm equipment.', time:'2 hrs ago', icon:'💍', color:'var(--pink)', unread:true},
     {id:'n2', title:'Pre Wedding in 5 Days', body:'Sneha Sharma shoot at Bandra Beach. Golden hour — arrive by 5:45 AM.', time:'Today', icon:'🌅', color:'var(--purple)', unread:true},
@@ -1337,7 +1332,7 @@ function save() {
     localStorage.setItem('lf_events', JSON.stringify(store.events));
     localStorage.setItem('lf_entries', JSON.stringify(store.entries));
     localStorage.setItem('lf_notifs', JSON.stringify(store.notifications));
-  } catch(e) {}
+  } catch(e) { console.warn('[LensFlow] Save error:', e); }
 }
 
 function load() {
@@ -1345,11 +1340,14 @@ function load() {
     const ev = localStorage.getItem('lf_events');
     const en = localStorage.getItem('lf_entries');
     const no = localStorage.getItem('lf_notifs');
-    if (ev) store.events = JSON.parse(ev);
-    if (en) store.entries = JSON.parse(en);
-    if (no) store.notifications = JSON.parse(no);
-    return !!(ev && en);
-  } catch(e) { return false; }
+    const parsedEv = ev ? JSON.parse(ev) : null;
+    const parsedEn = en ? JSON.parse(en) : null;
+    const parsedNo = no ? JSON.parse(no) : null;
+    if (Array.isArray(parsedEv)) store.events = parsedEv;
+    if (Array.isArray(parsedEn)) store.entries = parsedEn;
+    if (Array.isArray(parsedNo)) store.notifications = parsedNo;
+    return Array.isArray(parsedEv) && Array.isArray(parsedEn);
+  } catch(e) { console.warn('[LensFlow] Load error:', e); return false; }
 }
 
 // ========== INIT ==========
